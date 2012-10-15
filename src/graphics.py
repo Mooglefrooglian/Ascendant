@@ -4,7 +4,6 @@ import time
 from variables import game
 
 def initTitleScreen():
-	
 	os.environ['SDL_VIDEO_CENTERED'] = '1'
 	window = game.graphics.window = pygame.display.set_mode((500, 500), pygame.NOFRAME)
 	splash = pygame.transform.scale(pygame.image.load('resources/splash.png'), (500, 500))
@@ -20,6 +19,6 @@ def initTitleScreen():
 	pygame.display.update()
 	
 def render():
-	window.fill(pygame.Color(0, 0, 0))
+	game.graphics.window.fill(pygame.Color(0, 0, 0))
 	pygame.display.update()
 
