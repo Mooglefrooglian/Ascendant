@@ -1,12 +1,24 @@
+#-------------------------------------------------------------------------------
+#						Ascendant Alpha Source Code
+#			By the illustrious Fel and the enigmatic Mooglefrooglian
+#-------------------------------------------------------------------------------
+#Imports
 import pygame
+import twisted
+from twisted.internet import reactor
+#
+from variables import game
 import graphics
 import interface
+#-------------------------------------------------------------------------------
+#General game initialization
+#Pygame specific
+pygame.font.init()
+pygame.init()
+#
+clock=game.clock.pygame.time.Clock()
+#
+graphics.initTitleScreen()
+#-------------------------------------------------------------------------------
+interface.mainTitleScreenLoop()
 
-graphics.init()
-
-while True:
-	graphics.render()
-	interface.handle_events()
-	pygame.time.Clock().tick(30)	#This is incredibly incorrect (the clock should be at the start of the loop)
-									#but I don't know where to the time lapse. A new class?
-	

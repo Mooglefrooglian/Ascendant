@@ -17,3 +17,13 @@ def handle_events():
 		elif e.type == KEYDOWN:
 			if e.key == K_ESCAPE:
 				pygame.event.post(pygame.event.Event(QUIT))
+				
+def mainTitleScreenLoop():
+	game.renderState=1
+	while game.renderState==1:
+		#reactor.iterate()
+		game.deltaFrame=game.clock.tick(30)
+		reactor.iterate()
+		render()
+		interface.handle_events()
+		
