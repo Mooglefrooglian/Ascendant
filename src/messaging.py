@@ -1,7 +1,7 @@
 """The messaging class coordinates with the main loop to provide scheduling and
 event handling functions."""
 
-from variables import game
+from game import game
 import bisect
 
 msgdic = {}

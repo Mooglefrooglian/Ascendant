@@ -1,18 +1,18 @@
 import pygame
+from pygame import locals
 import tkMessageBox
 from twisted.internet import reactor
-#from pygame.locals import * # BAD MOOGLE NO WILDCARD IMPORTS
-from variables import game
+from game import game
 import messaging
 
 def handle_events():
 	#When focus is lost or gained, fire appropriate events
 	if not(pygame.key.get_focused()):
 		if game.graphics.lastFocused:
-			game.graphics.lastFocused=False
+			game.graphics.last_focused = False
 			messaging.propagate("Focus-Lost")
-	elif game.graphics.lastFocused==False:
-		game.graphics.lastFocused=True
+	elif not game.graphics.last_focused:
+		game.graphics.last_focused=True
 		messaging.propagate("Focus-Gained")
 		
 	pygame.event.pump()
@@ -33,7 +33,7 @@ def handle_events():
 				game.running=False
 				n="QUIT"
 			else:
-				n=""
+				continue
 		else:
 			n=str(r)
 		messaging.propagate(n,[event])

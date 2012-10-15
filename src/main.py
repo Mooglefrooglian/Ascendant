@@ -5,25 +5,31 @@
 #Imports
 import pygame
 import twisted
+import time
 from twisted.internet import reactor
 #
-from variables import game
+from game import game
 import graphics
 import interface
 import messaging
+
 #-------------------------------------------------------------------------------
-#General game initialization
-#Pygame specific
-pygame.font.init()
-pygame.init()
-#
+#Initialization
+graphics.show_splash_screen()
+
 clock=game.clock=pygame.time.Clock()
-#
-graphics.initTitleScreen()
+
+
+
+time.sleep(5) #More loading goes in this area!
+
+
+
+graphics.finalize()
 #-------------------------------------------------------------------------------
 
 while game.running:
-	game.frameTime=game.clock.tick(60)
+	game.frame_time=game.clock.tick(60)
 	#Handle user input
 	interface.handle_events()
 	#Handle internet events (and eventually game logic)
