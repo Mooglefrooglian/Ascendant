@@ -1,6 +1,6 @@
 class game():
 	#Contains all shared resources and variables related to the running of the game. 
-	VERSION = "0.0"
+	VERSION = "0.1"
 
 	clock=None
 	

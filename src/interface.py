@@ -8,7 +8,7 @@ import messaging
 def handle_events():
 	#When focus is lost or gained, fire appropriate events
 	if not(pygame.key.get_focused()):
-		if game.graphics.lastFocused:
+		if game.graphics.last_focused:
 			game.graphics.last_focused = False
 			messaging.propagate("Focus-Lost")
 	elif not game.graphics.last_focused:
@@ -37,4 +37,4 @@ def handle_events():
 				continue
 		else:
 			n=str(r)
-		messaging.propagate(n,[event])
+		messaging.propagate(n,(event,)) #note that the trailing comma is needed to make a tuple of 1 ele

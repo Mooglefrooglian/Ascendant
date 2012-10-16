@@ -5,27 +5,34 @@
 	This is probably nonsensical, so read onto the code!										"""
 	
 from game import game
-import uis.startscreen
+import os, re
+import messaging
 
 def init():
-	game.graphics.uis = {}
+	uis = game.graphics.uis = {}
 	
-	#Basic UI construction call here? Perhaps one could iterate over every UI in a subfolder
-	#(DEFINITELY ITERATE HERE)
-	uis.startscreen.init()
+	#Find all the UIs and load 'em up. One suspects a generic plugin system might simplify this?
+	#Also I'm not using glob BECAUSE IM NOT.
+	for r,d,files in os.walk("src/uis"): #NO I HAVE NO IDEA HOW PATHS WORK
+		for f in files:
+			if f.endswith(".py") and not f.startswith('__init__'):
+				f = re.sub(r'\.py$', '', f)
+				print("Found UI " + f)
+				u = getattr(__import__("uis." + f), f) #We found a UI!
+				u.init() #Call its init function!
 	
 	
 	
 	
 	
 	#uis['start_screen'] = StartScreenUI()
-	#uis['game'] = GameUI() #These all need to be implemented and would instead by called by an init loop!
+	#uis['game'] = GameUI() #These all need to be implemented 
 	#uis['options'] = OptionsUI()
 
-	game.graphics.base_ui = UI()
+	ui = game.graphics.base_ui = UI()
 	ui.add_child(uis['start_screen']) 
 
-class UI:
+class UI(object):
 	"""The base UI class from which all other UI elements should be modelled after."""
 	def __init__(self):
 		self.events = [] #[event string, func] array representing what this UI responds to 

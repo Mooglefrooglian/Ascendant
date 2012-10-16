@@ -17,7 +17,7 @@ class Trigger():
 		
 def propagate(e, args=()):
 	"""Calls an event of type e with arguments args."""
-	game.messaging.lastPropagated=e
+	game.messaging.last_propagated=e
 	try:
 		triggers = msgdic[e]
 	except KeyError: 
