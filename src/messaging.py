@@ -5,8 +5,7 @@ from game import game
 import bisect
 
 msgdic = {}
-timedEventQueue=[]
-
+timed_event_queue=[]
 
 class Trigger(): 
 	def __init__(self,function,args,looping=True):
@@ -16,37 +15,40 @@ class Trigger():
 	def execute(self,args):
 		self.function(*(self.args+args))
 		
-def propagate(astr, args=()):
-	"""Sends an event of type astr with arguments args."""
-	game.messaging.lastPropagated=astr
+def propagate(e, args=()):
+	"""Calls an event of type e with arguments args."""
+	game.messaging.lastPropagated=e
 	try:
-		alist = msgdic[astr]
-	except KeyError: return
-	for element in alist:
-		element.execute(args)
-		if not(element.looping):
-			alist.remove(element)
-def accept(astr, afunc,args=(),looping=True):
-	"""When event astr occurs, call afunc with args plus event args"""
-	t=Trigger(afunc,args,looping)
+		triggers = msgdic[e]
+	except KeyError: 
+		return
+	
+	for trigger in triggers:
+		trigger.execute(args)
+		if not(trigger.looping):
+			triggers.remove(element)
+			
+def accept(e, func, args=(), looping=True):
+	"""When event e occurs, call func with args plus event args"""
+	t=Trigger(func,args,looping)
 	try:
-		alist = msgdic[astr]
+		triggers = msgdic[e]
 	except KeyError:
-		alist = []
-		msgdic[astr] = alist
-	alist.append(t)
+		triggers = []
+		msgdic[e] = triggers
+	triggers.append(t)
 	
-def acceptOnce(astr,afunc,args=[]):
-	"""When astr event is propagated, afunc will be called with the propagation args, but only once."""
-	accept(astr,afunc,args,False)
+def accept_once(e, func, args=[]):
+	"""When event e is propagated, func will be called with the propagation args, but only once."""
+	accept(e, func, args, False)
 	
-def ignore(astr, afunc):
-    """Cancel a previously accepted astr/afunc combination."""
+def ignore(e, func):
+    """Cancel a previously accepted e/func combination."""
     try:
-		alist = msgdic[astr]
-		for element in alist:
-			if element.afunc==afunc:
-				alist.remove(afunc)
+		triggers = msgdic[e]
+		for t in triggers:
+			if t.function==func:
+				triggers.remove(t)
     except KeyError: pass
 
 
@@ -58,20 +60,22 @@ class TimedCall():
 		self.argz=argz
 	def __cmp__(self,other):
 		return cmp(self.time,other.time)
-def callLater(func,time,argz=[]):
-	bisect.insort_right(TimedCall(time,func,argz))
+		
+def call_later(func,time,argz=[]):
+	bisect.insort_right(timed_event_queue, TimedCall(time,func,argz))
 	
-def callAfter(func,duration,args=[]):
-	callLater(func,game.gametime+duration,args)
-def pumpMessaging():
-	q=game.gametime
-	while True:
-		r=timedEventQueue.pop(0)
+def call_after(func,duration,args=[]):
+	call_later(func,game.game_time+duration,args)
+	
+def pump_messaging():
+	q=game.game_time
+	while len(timed_event_queue) > 0:
+		r=timed_event_queue.pop(0)
 		if r.time>=q:
-			timedEventQueue.insert(0,r)
-			game.gametime=q 
+			timed_event_queue.insert(0,r)
+			game.game_time=q 
 			return
 		else:
-			game.gametime=r.time
-			r.func(*r.argz)
-	game.gametime=q
+			game.game_time=r.time
+			r.function(*r.argz)
+	game.game_time=q

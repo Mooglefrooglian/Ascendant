@@ -18,8 +18,7 @@ import messaging
 graphics.show_splash_screen()
 
 clock=game.clock=pygame.time.Clock()
-
-
+graphics.init()
 
 time.sleep(5) #More loading goes in this area!
 

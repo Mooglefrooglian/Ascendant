@@ -17,6 +17,8 @@ class game():
 	
 	class graphics():
 		window=None
+		base_ui=None
+		uis = {}
 		last_focused=True
 		
 	class messaging():
