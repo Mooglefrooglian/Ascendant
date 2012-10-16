@@ -69,7 +69,7 @@ def call_after(func,duration,args=[]):
 	
 def pump_messaging():
 	q=game.game_time
-	while len(timed_event_queue) > 0:
+	while len(timed_event_queue):
 		r=timed_event_queue.pop(0)
 		if r.time>=q:
 			timed_event_queue.insert(0,r)

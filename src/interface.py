@@ -16,7 +16,7 @@ def handle_events():
 		messaging.propagate("Focus-Gained")
 		
 	pygame.event.pump() #This line is NOT STRICTLY NECESSARY see http://www.pygame.org/docs/ref/event.html#pygame.event.pump
-	messaging.pump_messaging()
+
 	for event in pygame.event.get():
 		r = event.type
 		if r==pygame.locals.ACTIVEEVENT:

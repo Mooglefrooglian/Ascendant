@@ -5,16 +5,25 @@
 	This is probably nonsensical, so read onto the code!										"""
 	
 from game import game
+import uis.startscreen
 
 def init():
+	game.graphics.uis = {}
+	
 	#Basic UI construction call here? Perhaps one could iterate over every UI in a subfolder
-	uis = game.graphics.uis = {}
+	#(DEFINITELY ITERATE HERE)
+	uis.startscreen.init()
+	
+	
+	
+	
+	
 	#uis['start_screen'] = StartScreenUI()
-	#uis['game'] = GameUI()
+	#uis['game'] = GameUI() #These all need to be implemented and would instead by called by an init loop!
 	#uis['options'] = OptionsUI()
 
-	ui = game.graphics.base_ui = UI()
-	#ui.add_child(uis['start_screen']) #TO BE MADE LOL
+	game.graphics.base_ui = UI()
+	ui.add_child(uis['start_screen']) 
 
 class UI:
 	"""The base UI class from which all other UI elements should be modelled after."""

@@ -31,6 +31,8 @@ while game.running:
 	game.frame_time=game.clock.tick(60)
 	#Handle user input
 	interface.handle_events()
+	#Deal with any timed events (MAYBE THIS SHOULD BE DEALT WITH IN THE REACTOR.ITERATE BIT?)
+	messaging.pump_messaging()
 	#Handle internet events (and eventually game logic)
 	reactor.iterate()
 	#Draw pretty things
