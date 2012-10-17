@@ -2,10 +2,8 @@
 #						Ascendant Alpha Source Code
 #			By the illustrious Fel and the enigmatic Mooglefrooglian
 #-------------------------------------------------------------------------------
-import pygame
-pygame.init() #needed for other code to not become sad
-
 #Imports
+import pygame
 import twisted
 import time
 from twisted.internet import reactor

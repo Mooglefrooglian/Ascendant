@@ -1,5 +1,9 @@
 from game import game
 import os, re, imp
+import pygame
+
+pygame.init() #this can be called repeatedly
+pygame.font.init()
 
 game.graphics.uis = {}	
 
