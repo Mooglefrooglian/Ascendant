@@ -4,6 +4,7 @@ import tkMessageBox
 from twisted.internet import reactor
 from game import game
 import messaging
+from ui.ui import UI
 
 def handle_events():
 	#When focus is lost or gained, fire appropriate events
@@ -38,3 +39,7 @@ def handle_events():
 		else:
 			n=str(r)
 		messaging.propagate(n,(event,)) #note that the trailing comma is needed to make a tuple of 1 ele
+		
+def init():
+	ui = game.graphics.base_ui = UI()
+	ui.add_child(game.graphics.uis['start_screen']) 

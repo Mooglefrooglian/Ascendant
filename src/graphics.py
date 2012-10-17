@@ -1,7 +1,6 @@
 import pygame
 import os
 from game import game
-import ui
 
 def show_splash_screen():
 	pygame.font.init()
@@ -10,11 +9,11 @@ def show_splash_screen():
 	window = game.graphics.window = pygame.display.set_mode((500, 500), pygame.NOFRAME)
 	splash = pygame.transform.scale(pygame.image.load('resources/splash.png'), (500, 500))
 	window.blit(splash, (0,0)) 
-	window.blit(pygame.font.SysFont("Arial", 9).render('Loading...', 1, (255,255,255)), (30,20))
+	window.blit(pygame.font.Font("resources/fonts/visitor.ttf", 9).render('Loading...', 1, (255,255,255)), (30,20))
 	pygame.display.update() 
 	
 def init():
-	ui.init()
+	pass
 	#load sprites?
 	
 def finalize():

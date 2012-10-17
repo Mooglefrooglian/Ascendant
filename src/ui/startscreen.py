@@ -1,5 +1,5 @@
 from game import game
-from ui import UI
+from ui.ui import UI
 import pygame
 
 def init():
@@ -10,7 +10,7 @@ class StartScreenUI(UI):
 		super(StartScreenUI, self).__init__()
 		self.events = [['2-13', self.enter_pushed]]
 		#Set up font
-		self.font = pygame.font.SysFont("Arial", 20) #NEEDS A TEXT CLASS
+		self.font = pygame.font.Font("resources/fonts/visitor.ttf", 10) #NEEDS A TEXT CLASS
 		self.color = (255, 255, 255) #white
 	
 	def enter_pushed(self, args):

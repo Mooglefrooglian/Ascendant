@@ -2,8 +2,10 @@
 #						Ascendant Alpha Source Code
 #			By the illustrious Fel and the enigmatic Mooglefrooglian
 #-------------------------------------------------------------------------------
-#Imports
 import pygame
+pygame.init() #needed for other code to not become sad
+
+#Imports
 import twisted
 import time
 from twisted.internet import reactor
@@ -19,6 +21,7 @@ graphics.show_splash_screen()
 
 clock=game.clock=pygame.time.Clock()
 graphics.init()
+interface.init()
 
 time.sleep(2) #More loading goes in this area!
 
