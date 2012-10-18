@@ -1,6 +1,14 @@
 import pygame
 import os
 from game import game
+import messaging
+import camera
+
+class Drawable():
+	def __init__(self,x,y,image):
+		self.x=x
+		self.y=y
+		self.image=image
 
 def show_splash_screen():
 	pygame.font.init()
@@ -13,11 +21,12 @@ def show_splash_screen():
 	pygame.display.update() 
 	
 def init():
-	pass
+	game.graphics.camera=camera.Camera(0,0,game.graphics.resolution_x,game.graphics.resolution_y)
+	game.graphics.drawables.append(Drawable(0,0,pygame.image.load("resources/splash.png")))
 	#load sprites?
 	
 def finalize():
-	window = game.graphics.window = pygame.display.set_mode((1000, 1000))
+	window = game.graphics.window = pygame.display.set_mode((game.graphics.resolution_x, game.graphics.resolution_y))
 	pygame.display.set_caption("Ascendant Alpha " + game.VERSION)
 	
 	window.fill(pygame.Color(0, 0, 0)) 
@@ -27,12 +36,12 @@ def finalize():
 def render():
 	#Render game graphics!
 	game.graphics.window.fill(pygame.Color(0, 0, 0))
-	
+	#Draw game world
+	game.graphics.camera.update()
 	#Render UI
 	game.graphics.base_ui.render()
-	
-	
-	
+	#Call miscellaneous "every frame" functions
+	messaging.propagate("new_frame")
 	#Finalize this rendering of the game
 	pygame.display.update()
 

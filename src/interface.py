@@ -15,8 +15,6 @@ def handle_events():
 	elif not game.graphics.last_focused:
 		game.graphics.last_focused=True
 		messaging.propagate("Focus-Gained")
-		
-	pygame.event.pump() #This line is NOT STRICTLY NECESSARY see http://www.pygame.org/docs/ref/event.html#pygame.event.pump
 
 	for event in pygame.event.get():
 		r = event.type
