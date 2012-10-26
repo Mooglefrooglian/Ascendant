@@ -5,10 +5,13 @@ import messaging
 import camera
 
 class Drawable():
-	def __init__(self,x,y,image):
+	def __init__(self,x,y,image,scale=1.0):
 		self.x=x
 		self.y=y
 		self.image=image
+		self.scale=scale
+		self.width=scale*image.get_width()
+		self.height=scale*image.get_height()
 
 def show_splash_screen():
 	pygame.font.init()
@@ -22,6 +25,7 @@ def show_splash_screen():
 	
 def init():
 	game.graphics.camera=camera.Camera(0,0,game.graphics.resolution_x,game.graphics.resolution_y)
+	game.graphics.camera.disableInput()
 	game.graphics.drawables.append(Drawable(0,0,pygame.image.load("resources/splash.png")))
 	#load sprites?
 	

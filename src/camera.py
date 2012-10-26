@@ -20,19 +20,33 @@ class Camera():
 		#Used for mouse panning with middle mouse key
 		self.pan_x,self.pan_y=0.0,0.0
 		#Amounts of gameworld to render x/y 
-		self.distance_x_base=self.distance_x=1.0
-		self.distance_y_base=self.distance_y=height/float(width)
+		self.distance_x_base=self.distance_x=float(width)
+		self.distance_y_base=self.distance_y=float(height)
+		self.distance_ratio=self.distance_y/self.distance_x
 		#Stores scaled images for speed
 		self.scaled_images_dict={}
-		
+		self.inputEnabled=False
 		self.center(0.0,0.0)
-		self.zoom(26)
-		messaging.accept("new_frame",self.arrow_key_check)
-		messaging.accept("5-5",self.mouse_scroll_out)
-		messaging.accept("5-4",self.mouse_scroll_in)
-		messaging.accept("5-2",self.mouse_pan_on)
-		messaging.accept("6-2",self.mouse_pan_off)
-		messaging.accept("left_click_down",self.check_terrain_click)
+		self.zoom(1000.)
+		self.enableInput()
+	def enableInput(self):
+		if not(self.inputEnabled):
+			messaging.accept("new_frame",self.arrow_key_check)
+			messaging.accept("5-5",self.mouse_scroll_out)
+			messaging.accept("5-4",self.mouse_scroll_in)
+			messaging.accept("5-2",self.mouse_pan_on)
+			messaging.accept("6-2",self.mouse_pan_off)
+			messaging.accept("left_click_down",self.check_terrain_click)
+			self.inputEnabled=True
+	def disableInput(self):
+		if self.inputEnabled:
+			messaging.ignore("new_frame",self.arrow_key_check)
+			messaging.ignore("5-5",self.mouse_scroll_out)
+			messaging.ignore("5-4",self.mouse_scroll_in)
+			messaging.ignore("5-2",self.mouse_pan_on)
+			messaging.ignore("6-2",self.mouse_pan_off)
+			messaging.ignore("left_click_down",self.check_terrain_click)
+			self.inputEnabled=False
 	def draw(self):
 		game.graphics.window.blit(self.surface,(self.x,self.y))
 	def arrow_key_check(self):
@@ -52,20 +66,20 @@ class Camera():
 		if pressed[274]:
 			yoff+=1
 		if xoff!=0 or yoff!=0:
-			self.reposition(self.cam_x+xoff*8*game.frame_time,self.cam_y+yoff*8*game.frame_time)
-	def renderobject(self,x,y,image):
+			self.reposition(self.cam_x+xoff*game.frame_time/10.,self.cam_y+yoff*game.frame_time/10.)
+	def renderobject(self,x,y,image,drawScale=1.0):
 		"""Draws image at ingame coordinates x,y to screen"""
 		x2,y2=self.world_to_render(float(x),float(y))
-		scale=round(self.distance_x,1)
+		scale=round(self.distance_x)
 		if (image,scale) in self.scaled_images_dict:
 			im=self.scaled_images_dict[(image,scale)]
 		else:
-			im=pygame.transform.smoothscale(image,(int(math.ceil(image.get_width()*(self.distance_x_base/self.distance_x))),int(math.ceil(image.get_height()*(self.distance_y_base/self.distance_y)))))
+			im=pygame.transform.smoothscale(image,(int(math.ceil(drawScale*image.get_width()*(self.distance_x_base/self.distance_x))),int(math.ceil(drawScale*image.get_height()*(self.distance_y_base/self.distance_y)))))
 			self.scaled_images_dict[(image,scale)]=im
 		self.surface.blit(im,(x2-im.get_width()/2.0,y2-im.get_height()/2.0))
 	def screen_to_cam(self,x,y):
 		"""Converts pixel on the screen to point ([0-1],[0-1]) on the camera."""
-		return ((x-self.x)/self.width,(y-self.y)/self.height)
+		return ((x-self.x)/float(self.width),(y-self.y)/float(self.height))
 	def cam_to_screen(self,x,y):
 		return (x*self.width+self.x,y*self.height+self.y)
 	def cam_to_world(self,x,y):
@@ -90,9 +104,9 @@ class Camera():
 		end_x,end_y=self.cam_to_world(1,1)
 		#Draw everything
 		for drawable in game.graphics.drawables:
-			if drawable.x+drawable.image.get_width()>=start_x and drawable.y+drawable.image.get_height()>=start_y \
-			and drawable.x-drawable.image.get_width()<=end_x and drawable.y-drawable.image.get_height()<=end_y:
-				self.renderobject(drawable.x,drawable.y,drawable.image)
+			if drawable.x+drawable.width>=start_x and drawable.y+drawable.height>=start_y \
+			and drawable.x-drawable.width<=end_x and drawable.y-drawable.height<=end_y:
+				self.renderobject(drawable.x,drawable.y,drawable.image,drawable.scale)
 		self.draw()
 	def center(self,x,y):
 		self.cam_x=x-self.distance_x/2.0
@@ -105,12 +119,11 @@ class Camera():
 		self.center_x=x+self.distance_x/2.0
 		self.center_y=y+self.distance_y/2.0
 	def zoom(self,level):
-		if level<3: level=3
-		if level>120: level=120
-		cenx,ceny=self.center_x,self.center_y
-		self.distance_y=level*(self.distance_y/self.distance_x)
+		if level<10: level=10
+		if level>3600: level=3600
+		self.distance_y=level*self.distance_ratio
 		self.distance_x=level
-		self.center(cenx,ceny)
+		self.center(self.center_x,self.center_y)
 	def mouse_scroll_out(self,event):
 		x,y=event.pos
 		if x>self.x and y>self.y and x<self.x+self.width and y<self.y+self.height:
@@ -118,8 +131,10 @@ class Camera():
 	def mouse_scroll_in(self,event):
 		x,y=event.pos
 		if x>self.x and y>self.y and x<self.x+self.width and y<self.y+self.height:
+			#self.zoom(self.distance_x*0.8)
 			x2,y2=self.screen_to_cam(x,y)
 			x,y=self.cam_to_world(x2,y2)
+			#self.zoominandcenter(self.distance_x/1.2,x,y)
 			self.zoom(self.distance_x/1.2)
 			self.center(x-(x2-0.5)*self.distance_x,y-(y2-0.5)*self.distance_y)
 	def mouse_pan_on(self,event):
