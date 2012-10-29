@@ -16,10 +16,14 @@ class game():
 	
 	
 	class graphics():
+		drawables=[]
+		camera=None
 		window=None
 		base_ui=None
 		uis = {}
 		last_focused=True
+		resolution_x=1000
+		resolution_y=1000
 		
 	class messaging():
 		last_propagated=""
